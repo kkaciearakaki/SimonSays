@@ -48,4 +48,7 @@ Players earn +1 point by correctly inputting the pattern that is displayed on th
 - `getUserInput()` Used to process the player's move
   - Plays a different tone depending on what buttons the user presses
 - `tone(A0, ###)` Plays a tone from the A0 pin, HZ depends on number put in place of ###
-- `noTone(A0)` Turns off the tone currently playing 
+- `noTone(A0)` Turns off the tone currently playing
+
+### Serial Monitor 
+- Shows player final score when game is over
