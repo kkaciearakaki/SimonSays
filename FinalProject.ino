@@ -42,11 +42,15 @@ void loop() {
       CircuitPlayground.clearPixels(); 
       delay(500); 
 
+      if(!slideSwitch){
+        return;
+      }
+
       if (currentAcceleration() > 30) {
         continueGame = true; 
         CircuitPlayground.clearPixels(); 
         break;
-      }
+      } 
     }
   }
   
@@ -64,14 +68,9 @@ void loop() {
       CircuitPlayground.clearPixels(); 
       delay(500); 
       if (!continueGame) { 
-        break; 
+        return; 
       }
     } 
-    
-    if (!continueGame) { // Makes it so that the game ends right away and doesn't run the red blinking lights 
-      break; 
-    }
-    
 
     for (int i = 0; i < currentRound+1; i++) { // Goes through pattern array, gets each column value and compares it to what the user inputs
       int input = getUserInput(); 
@@ -93,7 +92,10 @@ void loop() {
         endBlink(); 
       }
 
-      // announce score at end
+      Serial.print("Final Score: "); 
+      Serial.println(currentRound); 
+
+
       break; 
     } 
 
