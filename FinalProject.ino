@@ -7,11 +7,11 @@ volatile bool rightPressed = false;
 
 volatile bool continueGame = false; 
 
-int currentRound = 0; 
+int currentRound = 0; // Determines what round the player is on, and also is used to keep score 
 
 int toneFreq; 
 
-int pattern[100]; 
+int pattern[100]; // Creates an array with 100 columns 
 
 
 void setup() {
@@ -26,14 +26,14 @@ void setup() {
   attachInterrupt(digitalPinToInterrupt(5), leftInterrupt, RISING);
   attachInterrupt(digitalPinToInterrupt(7), switchInterrupt, CHANGE);
 
-  randomSeed(analogRead(A9)); // So that the random numbers are different each time
+  randomSeed(analogRead(A9)); // So that the random numbers are different each time for the pattern array
 
   CircuitPlayground.setAccelRange(LIS3DH_RANGE_8_G);
 } 
 
 void loop() {  
 
-  if (slideSwitch) { 
+  if (slideSwitch) { // If the board is turned on, blink teal lights 
     while (true) { 
       for (int i = 0; i < 10; i++) { 
         CircuitPlayground.setPixelColor(i, 0, 155, 155); 
@@ -42,11 +42,11 @@ void loop() {
       CircuitPlayground.clearPixels(); 
       delay(500); 
 
-      if(!slideSwitch){
+      if(!slideSwitch){ // Immediately restart code if the switch is flipped
         return;
       }
 
-      if (currentAcceleration() > 30) {
+      if (currentAcceleration() > 30) { // When the player shakes the board, begin game
         continueGame = true; 
         CircuitPlayground.clearPixels(); 
         break;
@@ -54,13 +54,13 @@ void loop() {
     }
   }
   
-  createPattern(); 
+  createPattern(); // Create an array that tells the code what light pattern to display
   currentRound = 0;
 
   delay(500); 
 
-  while(continueGame) { // only runs for 100 total rounds
-    for (int i = 0; i < currentRound+1; i++) { 
+  while(continueGame) { // Runs while continueGame is true 
+    for (int i = 0; i < currentRound+1; i++) { // Shows light pattern
       showCommand(i); 
       tone(A0, toneFreq); 
       delay(500); 
@@ -83,7 +83,7 @@ void loop() {
       noTone(A0); 
     }
 
-    if (!continueGame && slideSwitch) { 
+    if (!continueGame && slideSwitch) { // If the player gets something wrong
       noTone(A0); 
       CircuitPlayground.clearPixels();
       Serial.println("GAME OVER");
@@ -111,17 +111,17 @@ void loop() {
 // If 0, right button should be pressed | If 1, left button should be pressed | If 2, both left and right button should be pressed 
 
 void showCommand(int command) { 
-  if (pattern[command] == 0) { 
+  if (pattern[command] == 0) { // Right LEDS turn on
     for (int i = 0; i < 5; i++) { 
       CircuitPlayground.setPixelColor(i, 0, 0, 255); 
     }
     toneFreq = 261; // C4
-  } else if (pattern[command] == 1) { 
+  } else if (pattern[command] == 1) { // Left LEDS turn on
     for (int i = 5; i < 10; i++) { 
       CircuitPlayground.setPixelColor(i, 0, 0, 255); 
     } 
     toneFreq = 349; // F4
-  } else { 
+  } else { // Both LEDS turn on
     for (int i = 0; i < 10; i++) { 
       CircuitPlayground.setPixelColor(i, 0, 0, 255); 
     }
@@ -129,7 +129,7 @@ void showCommand(int command) {
   }
 }
 
-void endBlink() { 
+void endBlink() { // Signals end of game
   for(int i = 0; i < 10; i++) { 
     CircuitPlayground.setPixelColor(i, 255, 0, 0); 
   }
@@ -138,7 +138,7 @@ void endBlink() {
   delay(200); 
 }
 
-int getUserInput() { 
+int getUserInput() { // Returns 0, 1 or 2 to deepending on what button the user presses 
   unsigned long startTime = millis();
 
   // Reset button press flags before waiting for input
